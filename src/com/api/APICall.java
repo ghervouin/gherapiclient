@@ -32,13 +32,13 @@ public class APICall {
 		runTest(testShort2, 4);
 		runTest(testShort3, 4);
 		runTest(testShort4, 4);
-		
+
 		/** real-run **/
 		runTest(testShort1, 20);
 		runTest(testShort2, 20);
 		runTest(testShort3, 20);
 		runTest(testShort4, 20);
-		
+
 		/** results **/
 		System.out.println("---------------");
 		System.out.println(testShort1.getPrintableResult());
@@ -47,18 +47,20 @@ public class APICall {
 		System.out.println(testShort4.getPrintableResult());
 		System.out.println("---------------");
 		
+		exporCSV("testShort.csv", testShort1, testShort2, testShort3, testShort4);
+
 		/** dry-run **/
 		runTest(testMessage1, 4);
 		runTest(testMessage2, 4);
 		runTest(testMessage3, 4);
 		runTest(testMessage4, 4);
-		
+
 		/** real-run **/
 		runTest(testMessage1, 20);
 		runTest(testMessage2, 20);
 		runTest(testMessage3, 20);
 		runTest(testMessage4, 20);
-		
+
 		/** results **/
 		System.out.println("---------------");
 		System.out.println(testMessage1.getPrintableResult());
@@ -67,18 +69,20 @@ public class APICall {
 		System.out.println(testMessage4.getPrintableResult());
 		System.out.println("---------------");
 		
+		exporCSV("testMessage.csv", testMessage1, testMessage2, testMessage3, testMessage4);
+
 		/** dry-run **/
 		runTest(testBig1, 4);
 		runTest(testBig2, 4);
 		runTest(testBig3, 4);
 		runTest(testBig4, 4);
-		
+
 		/** real-run **/
 		runTest(testBig1, 20);
 		runTest(testBig2, 20);
 		runTest(testBig3, 20);
 		runTest(testBig4, 20);
-		
+
 		/** results **/
 		System.out.println("---------------");
 		System.out.println(testBig1.getPrintableResult());
@@ -86,6 +90,8 @@ public class APICall {
 		System.out.println(testBig3.getPrintableResult());
 		System.out.println(testBig4.getPrintableResult());
 		System.out.println("---------------");
+		
+		exporCSV("testBig.csv", testBig1, testBig2, testBig3, testBig4);
 	}
 
 	static void runTest(TestURL test, int nbtrials) throws Exception {
@@ -108,5 +114,33 @@ public class APICall {
 			fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
 		}
 		return (System.currentTimeMillis()-l);
+	}
+
+	static void exporCSV(String filename, TestURL ... testURLs) throws Exception {
+		String DEL = ";";
+
+		try (FileOutputStream fileOutputStream = new FileOutputStream(filename);
+				FileChannel fileChannel = fileOutputStream.getChannel()) {
+
+			int trials = 0;
+			String title = "Trial ID"+DEL;
+			for (TestURL testUrl : testURLs) {
+				long[] testUrls = testUrl.results;
+				trials = testUrls.length;
+				title += testUrl.id+DEL;
+			}
+			title += "\n";
+			fileOutputStream.write(title.getBytes());
+
+			String s = "";
+			for (int i=0; i<trials; i++) {
+				s += "T"+i+DEL;
+				for (TestURL testUrl : testURLs) {
+					s += testUrl.results[i]+DEL;
+				}
+				s += "\n";
+			}
+			fileOutputStream.write(s.getBytes());
+		}
 	}
 }
