@@ -12,20 +12,20 @@ public class APICall {
 	static File OUTPUT_LOCATION = new File("output");
 	public static void main(String[] args) throws Exception {
 
-		TestURL testShort1 = new TestURL("6KB-BACK", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/short"));
-		TestURL testShort2 = new TestURL("6KB-GAPI", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/short"));
-		TestURL testShort3 = new TestURL("6KB-AAPI", new URL("https://gherapi.azure-api.net/short"));
-		TestURL testShort4 = new TestURL("6KB-AAPI", new URL("https://gherapiwest.azure-api.net/short"));
+		TestURL testShort1 = new TestURL("6KB-BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/short"));
+		TestURL testShort2 = new TestURL("6KB-API-APIGEE", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/short"));
+		TestURL testShort3 = new TestURL("6KB-API-AZURE_EU_NORTH", new URL("https://gherapi.azure-api.net/short"));
+		TestURL testShort4 = new TestURL("6KB-API-AZURE_EU_WEST", new URL("https://gherapiwest.azure-api.net/short"));
 
-		TestURL testMessage1 = new TestURL("2MB-BACK", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/message"));
-		TestURL testMessage2 = new TestURL("2MB-GAPI", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/message"));
-		TestURL testMessage3 = new TestURL("2MB-AAPI", new URL("https://gherapi.azure-api.net/message"));
-		TestURL testMessage4 = new TestURL("2MB-AAPI", new URL("https://gherapiwest.azure-api.net/message"));
+		TestURL testMessage1 = new TestURL("2MB-BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/message"));
+		TestURL testMessage2 = new TestURL("2MB-API-APIGEE", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/message"));
+		TestURL testMessage3 = new TestURL("2MB-API-AZURE_EU_NORTH", new URL("https://gherapi.azure-api.net/message"));
+		TestURL testMessage4 = new TestURL("2MB-API-AZURE_EU_WEST", new URL("https://gherapiwest.azure-api.net/message"));
 
-		TestURL testBig1 = new TestURL("8MB-BACK", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/big"));
-		TestURL testBig2 = new TestURL("8MB-GAPI", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/big"));
-		TestURL testBig3 = new TestURL("8MB-AAPI", new URL("https://gherapi.azure-api.net/big"));
-		TestURL testBig4 = new TestURL("8MB-AAPI", new URL("https://gherapiwest.azure-api.net/big"));
+		TestURL testBig1 = new TestURL("8MB-BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/big"));
+		TestURL testBig2 = new TestURL("8MB-API-APIGEE", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/big"));
+		TestURL testBig3 = new TestURL("8MB-API-AZURE_EU_NORTH", new URL("https://gherapi.azure-api.net/big"));
+		TestURL testBig4 = new TestURL("8MB-API-AZURE_EU_WEST", new URL("https://gherapiwest.azure-api.net/big"));
 
 		/** dry-run **/
 		runTest(testShort1, 4);
