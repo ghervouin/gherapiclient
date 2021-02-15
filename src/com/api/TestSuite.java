@@ -1,5 +1,7 @@
 package com.api;
 
+import java.util.Arrays;
+
 public class TestSuite {
 	private String id;
 	private TestURL[] tests;
@@ -24,7 +26,7 @@ public class TestSuite {
 	@Override
 	public String toString() {
 		String s = this.getClass().getSimpleName()+"["+getId()+"]\n";
-		s += tests;
+		s += Arrays.toString(tests);
 		return s;
 	}
 }
