@@ -1,26 +1,23 @@
 package com.api;
 
-import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
-
 public class TestSuite {
 	private String id;
-	private List<TestURL> tests = new LinkedList<TestURL>();
+	private TestURL[] tests;
 
 	TestSuite(String id) {
 		this.id = id;
+	}
+
+	TestSuite(String id, TestURL ... tests) {
+		this.id = id;
+		this.tests = tests;
 	}
 
 	public String getId() {
 		return this.id;
 	}
 	
-	public void addTest(String id, URL url) {
-		tests.add(new TestURL(id, url));
-	}
-	
-	public  List<TestURL> getTests() {
+	public  TestURL[] getTests() {
 		return tests;
 	}
 
