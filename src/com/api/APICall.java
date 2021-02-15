@@ -14,7 +14,7 @@ import java.nio.ByteBuffer;
 public class APICall {
 
 	static final File OUTPUT_LOCATION = new File("output");
-	static final int NB_TRIAL = 25;
+	static final int NB_TRIAL = 20;
 	
 	public static void main(String[] args) throws Exception {
 
@@ -23,81 +23,47 @@ public class APICall {
 		}
 		OUTPUT_LOCATION.mkdir();
 
-		TestURL testShort1 = new TestURL("6KB-BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/short"));
-		TestURL testShort2 = new TestURL("6KB-API-APIGEE", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/short"));
-		TestURL testShort3 = new TestURL("6KB-API-AZURE_EU_NORTH", new URL("https://gherapi.azure-api.net/short"));
-		TestURL testShort4 = new TestURL("6KB-API-AZURE_EU_WEST", new URL("https://gherapiwest.azure-api.net/short"));
+		TestSuite testSmall = new TestSuite("Small-6KB");
+		testSmall.addTest("BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/short"));
+		testSmall.addTest("APIGEE_EU", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/short"));
+		testSmall.addTest("AZ_EU_NORTH", new URL("https://gherapi.azure-api.net/short"));
+		testSmall.addTest("AZ_EU_WEST", new URL("https://gherapiwest.azure-api.net/short"));
 
-		TestURL testMessage1 = new TestURL("2MB-BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/message"));
-		TestURL testMessage2 = new TestURL("2MB-API-APIGEE", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/message"));
-		TestURL testMessage3 = new TestURL("2MB-API-AZURE_EU_NORTH", new URL("https://gherapi.azure-api.net/message"));
-		TestURL testMessage4 = new TestURL("2MB-API-AZURE_EU_WEST", new URL("https://gherapiwest.azure-api.net/message"));
+		TestSuite testMedium = new TestSuite("Medium-2MB");
+		testMedium.addTest("BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/message"));
+		testMedium.addTest("APIGEE_EU", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/message"));
+		testMedium.addTest("AZ_EU_NORTH", new URL("https://gherapi.azure-api.net/message"));
+		testMedium.addTest("AZ_EU_WEST", new URL("https://gherapiwest.azure-api.net/message"));
 
-		TestURL testBig1 = new TestURL("8MB-BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/big"));
-		TestURL testBig2 = new TestURL("8MB-API-APIGEE", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/big"));
-		TestURL testBig3 = new TestURL("8MB-API-AZURE_EU_NORTH", new URL("https://gherapi.azure-api.net/big"));
-		TestURL testBig4 = new TestURL("8MB-API-AZURE_EU_WEST", new URL("https://gherapiwest.azure-api.net/big"));
+		TestSuite testLarge = new TestSuite("Large-8MB");
+		testLarge.addTest("BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/big"));
+		testLarge.addTest("APIGEE_EU", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/big"));
+		testLarge.addTest("AZ_EU_NORTH", new URL("https://gherapi.azure-api.net/big"));
+		testLarge.addTest("AZ_EU_WEST", new URL("https://gherapiwest.azure-api.net/big"));
 
-		/** real-run **/
-		runTest(testShort1, NB_TRIAL);
-		runTest(testShort2, NB_TRIAL);
-		runTest(testShort3, NB_TRIAL);
-		runTest(testShort4, NB_TRIAL);
-
-		/** results **/
-		System.out.println("---------------");
-		System.out.println(testShort1.getPrintableResult());
-		System.out.println(testShort2.getPrintableResult());
-		System.out.println(testShort3.getPrintableResult());
-		System.out.println(testShort4.getPrintableResult());
-		System.out.println("---------------");
+		runTest(testSmall, NB_TRIAL);
+		System.out.println(testSmall);
+		exporCSV(testSmall.getId()+".csv", testSmall);
+		exporSummaryCSV(testSmall.getId()+"-Summary.csv", testSmall);
 		
-		exporCSV("testShort.csv", testShort1, testShort2, testShort3, testShort4);
-		exporSummaryCSV("testShortSummary.csv", testShort1, testShort2, testShort3, testShort4);
-
-		/** real-run **/
-		runTest(testMessage1, NB_TRIAL);
-		runTest(testMessage2, NB_TRIAL);
-		runTest(testMessage3, NB_TRIAL);
-		runTest(testMessage4, NB_TRIAL);
-
-		/** results **/
-		System.out.println("---------------");
-		System.out.println(testMessage1.getPrintableResult());
-		System.out.println(testMessage2.getPrintableResult());
-		System.out.println(testMessage3.getPrintableResult());
-		System.out.println(testMessage4.getPrintableResult());
-		System.out.println("---------------");
+		runTest(testMedium, NB_TRIAL);
+		System.out.println(testMedium);
+		exporCSV(testMedium.getId()+".csv", testMedium);
+		exporSummaryCSV(testMedium.getId()+"-Summary.csv", testMedium);
 		
-		exporCSV("testMessage.csv", testMessage1, testMessage2, testMessage3, testMessage4);
-		exporSummaryCSV("testMessageSummary.csv", testMessage1, testMessage2, testMessage3, testMessage4);
-
-		/** real-run **/
-		runTest(testBig1, NB_TRIAL);
-		runTest(testBig2, NB_TRIAL);
-		runTest(testBig3, NB_TRIAL);
-		runTest(testBig4, NB_TRIAL);
-
-		// /** results **/
-		System.out.println("---------------");
-		System.out.println(testBig1.getPrintableResult());
-		System.out.println(testBig2.getPrintableResult());
-		System.out.println(testBig3.getPrintableResult());
-		System.out.println(testBig4.getPrintableResult());
-		System.out.println("---------------");
-		
-		exporCSV("testBig.csv", testBig1, testBig2, testBig3, testBig4);
-		exporSummaryCSV("testBigSummary.csv", testBig1, testBig2, testBig3, testBig4);
+		runTest(testLarge, NB_TRIAL);
+		System.out.println(testLarge);				
+		exporCSV(testLarge.getId()+".csv", testLarge);
+		exporSummaryCSV(testLarge.getId()+"-Summary.csv", testLarge);
 	}
 
-	static void runTest(TestURL test, int nbtrials) throws Exception {
-		long[] c = new long[nbtrials];
-		for (int i=0; i<nbtrials; i++) {
-			// c[i] = readAndStore(test, i);
-			c[i] = readAndForget(test, i);
+	static void runTest(TestSuite testSuite, int nbTrials) throws Exception {
+		for (int i=0; i<nbTrials; i++) {
+			for (TestURL test : testSuite.getTests()) {
+				// test.addResult(readAndStore(test, i));
+				test.addResult(readAndForget(test, i));
+			}
 		}
-		test.setResults(c);
-		System.out.println(test);
 	}
 
 	static long readAndStore(TestURL test, int runId) throws Exception {
@@ -133,8 +99,8 @@ public class APICall {
 		}
 		return (System.currentTimeMillis()-l);
 	}
-	
-	static void exporCSV(String filename, TestURL ... testURLs) throws Exception {
+
+	static void exporCSV(String filename, TestSuite testSuite) throws Exception {
 		String DEL = ";";
 
 		try (FileOutputStream fileOutputStream = new FileOutputStream(
@@ -142,9 +108,8 @@ public class APICall {
 
 			int trials = 0;
 			String header = "Trial ID"+DEL;
-			for (TestURL testUrl : testURLs) {
-				long[] testUrls = testUrl.getResults();
-				trials = testUrls.length;
+			for (TestURL testUrl: testSuite.getTests()) {
+				trials = testUrl.getResults().size();
 				header += testUrl.getId()+DEL;
 			}
 			header += "\n";
@@ -153,16 +118,16 @@ public class APICall {
 			String s = "";
 			for (int i=0; i<trials; i++) {
 				s += "T"+(i+1)+DEL;
-				for (TestURL testUrl : testURLs) {
-					s += testUrl.getResults()[i]+DEL;
+				for (TestURL testUrl: testSuite.getTests()) {
+					s += testUrl.getResult(i)+DEL;
 				}
 				s += "\n";
 			}
 			fileOutputStream.write(s.getBytes());
 		}
 	}
-	
-	static void exporSummaryCSV(String filename, TestURL ... testURLs) throws Exception {
+
+	static void exporSummaryCSV(String filename, TestSuite testSuite) throws Exception {
 		String DEL = ";";
 
 		try (FileOutputStream fileOutputStream = new FileOutputStream(
@@ -170,8 +135,8 @@ public class APICall {
 
 			String header = "ID"+DEL+"CNT"+DEL+"SUM"+DEL+"MIN"+DEL+"MAX"+DEL+"AVG"+DEL+"MED"+DEL+"STD"+"\n";
 			fileOutputStream.write(header.getBytes());
-			
-			for (TestURL t : testURLs) {
+
+			for (TestURL t : testSuite.getTests()) {
 				TestStatistics ts = t.getTestStatistics();
 				String s = "";
 				s += t.getId()+DEL;
