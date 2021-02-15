@@ -18,6 +18,11 @@ public class APICall {
 	
 	public static void main(String[] args) throws Exception {
 
+		if (OUTPUT_LOCATION.exists()) {
+			OUTPUT_LOCATION.delete();
+		}
+		OUTPUT_LOCATION.mkdir();
+
 		TestURL testShort1 = new TestURL("6KB-BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/short"));
 		TestURL testShort2 = new TestURL("6KB-API-APIGEE", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/short"));
 		TestURL testShort3 = new TestURL("6KB-API-AZURE_EU_NORTH", new URL("https://gherapi.azure-api.net/short"));
