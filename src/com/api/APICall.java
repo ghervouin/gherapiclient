@@ -23,23 +23,26 @@ public class APICall {
 		}
 		OUTPUT_LOCATION.mkdir();
 
-		TestSuite testSmall = new TestSuite("Small-6KB");
-		testSmall.addTest("BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/short"));
-		testSmall.addTest("APIGEE_EU", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/short"));
-		testSmall.addTest("AZ_EU_NORTH", new URL("https://gherapi.azure-api.net/short"));
-		testSmall.addTest("AZ_EU_WEST", new URL("https://gherapiwest.azure-api.net/short"));
+		TestSuite testSmall = new TestSuite("Small-6KB",
+			new TestURL("BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/short")),
+			new TestURL("APIGEE_EU", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/short")),
+			new TestURL("AZ_EU_NORTH", new URL("https://gherapi.azure-api.net/short")),
+			new TestURL("AZ_EU_WEST", new URL("https://gherapiwest.azure-api.net/short"))
+		);
+		
+		TestSuite testMedium = new TestSuite("Medium-2MB",
+			new TestURL("BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/message")),
+			new TestURL("APIGEE_EU", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/message")),
+			new TestURL("AZ_EU_NORTH", new URL("https://gherapi.azure-api.net/message")),
+			new TestURL("AZ_EU_WEST", new URL("https://gherapiwest.azure-api.net/message"))
+		);
 
-		TestSuite testMedium = new TestSuite("Medium-2MB");
-		testMedium.addTest("BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/message"));
-		testMedium.addTest("APIGEE_EU", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/message"));
-		testMedium.addTest("AZ_EU_NORTH", new URL("https://gherapi.azure-api.net/message"));
-		testMedium.addTest("AZ_EU_WEST", new URL("https://gherapiwest.azure-api.net/message"));
-
-		TestSuite testLarge = new TestSuite("Large-8MB");
-		testLarge.addTest("BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/big"));
-		testLarge.addTest("APIGEE_EU", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/big"));
-		testLarge.addTest("AZ_EU_NORTH", new URL("https://gherapi.azure-api.net/big"));
-		testLarge.addTest("AZ_EU_WEST", new URL("https://gherapiwest.azure-api.net/big"));
+		TestSuite testLarge = new TestSuite("Large-8MB",
+			new TestURL("BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/big")),
+			new TestURL("APIGEE_EU", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/big")),
+			new TestURL("AZ_EU_NORTH", new URL("https://gherapi.azure-api.net/big")),
+			new TestURL("AZ_EU_WEST", new URL("https://gherapiwest.azure-api.net/big"))
+		);
 
 		runTest(testSmall, NB_TRIAL);
 		System.out.println(testSmall);
@@ -72,7 +75,7 @@ public class APICall {
 			testOutput.delete();
 			testOutput.mkdir();
 		}
-		long l = System.currentTimeMillis();	
+		long l = System.currentTimeMillis();
 		URL nocacheUrl = new URL(test.getUrl().toString()+"?timestamp="+l);	
 		try (FileOutputStream fileOutputStream = new FileOutputStream(new File(testOutput, test.getId()+"_"+runId));
 				FileChannel fileChannel = fileOutputStream.getChannel();
@@ -86,7 +89,7 @@ public class APICall {
 	}
 
 	static long readAndForget(TestURL test, int runId) throws Exception {
-		long l = System.currentTimeMillis();	
+		long l = System.currentTimeMillis();
 		URL nocacheUrl = new URL(test.getUrl().toString()+"?timestamp="+l);	
 		try (ReadableByteChannel readableByteChannel = Channels.newChannel(nocacheUrl.openStream())) {
 			ByteBuffer buffer = ByteBuffer.allocate(1024);
