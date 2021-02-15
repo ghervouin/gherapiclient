@@ -12,6 +12,11 @@ public class APICall {
 	static File OUTPUT_LOCATION = new File("output");
 	public static void main(String[] args) throws Exception {
 
+		if (OUTPUT_LOCATION.exists()) {
+			OUTPUT_LOCATION.delete();
+		}
+		OUTPUT_LOCATION.mkdir();
+
 		TestURL testShort1 = new TestURL("6KB-BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/short"));
 		TestURL testShort2 = new TestURL("6KB-API-APIGEE", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/short"));
 		TestURL testShort3 = new TestURL("6KB-API-AZURE_EU_NORTH", new URL("https://gherapi.azure-api.net/short"));
@@ -28,10 +33,10 @@ public class APICall {
 		TestURL testBig4 = new TestURL("8MB-API-AZURE_EU_WEST", new URL("https://gherapiwest.azure-api.net/big"));
 
 		/** dry-run **/
-		runTest(testShort1, 4);
-		runTest(testShort2, 4);
-		runTest(testShort3, 4);
-		runTest(testShort4, 4);
+		// runTest(testShort1, 4);
+		// runTest(testShort2, 4);
+		// runTest(testShort3, 4);
+		// runTest(testShort4, 4);
 
 		/** real-run **/
 		runTest(testShort1, 20);
@@ -50,10 +55,10 @@ public class APICall {
 		exporCSV("testShort.csv", testShort1, testShort2, testShort3, testShort4);
 
 		/** dry-run **/
-		runTest(testMessage1, 4);
-		runTest(testMessage2, 4);
-		runTest(testMessage3, 4);
-		runTest(testMessage4, 4);
+		// runTest(testMessage1, 4);
+		// runTest(testMessage2, 4);
+		// runTest(testMessage3, 4);
+		// runTest(testMessage4, 4);
 
 		/** real-run **/
 		runTest(testMessage1, 20);
@@ -72,10 +77,10 @@ public class APICall {
 		exporCSV("testMessage.csv", testMessage1, testMessage2, testMessage3, testMessage4);
 
 		/** dry-run **/
-		runTest(testBig1, 4);
-		runTest(testBig2, 4);
-		runTest(testBig3, 4);
-		runTest(testBig4, 4);
+		// runTest(testBig1, 4);
+		// runTest(testBig2, 4);
+		// runTest(testBig3, 4);
+		// runTest(testBig4, 4);
 
 		/** real-run **/
 		runTest(testBig1, 20);
@@ -83,7 +88,7 @@ public class APICall {
 		runTest(testBig3, 20);
 		runTest(testBig4, 20);
 
-		/** results **/
+		// /** results **/
 		System.out.println("---------------");
 		System.out.println(testBig1.getPrintableResult());
 		System.out.println(testBig2.getPrintableResult());
@@ -107,11 +112,15 @@ public class APICall {
 	}
 
 	static long readAndStore(TestURL test, int runId, File outputFolder) throws Exception {
-		long l = System.currentTimeMillis();		
-		ReadableByteChannel readableByteChannel = Channels.newChannel(test.url.openStream());
+		long l = System.currentTimeMillis();	
+		URL nocacheUrl = new URL(test.url.toString()+"?timestamp="+l);	
 		try (FileOutputStream fileOutputStream = new FileOutputStream(new File(outputFolder, test.id+"_"+runId));
 				FileChannel fileChannel = fileOutputStream.getChannel()) {
+			ReadableByteChannel readableByteChannel = Channels.newChannel(nocacheUrl.openStream());
 			fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+		}
+		catch(java.net.SocketException e) {
+			System.err.println("Socke exception: " + e);
 		}
 		return (System.currentTimeMillis()-l);
 	}
@@ -119,7 +128,7 @@ public class APICall {
 	static void exporCSV(String filename, TestURL ... testURLs) throws Exception {
 		String DEL = ";";
 
-		try (FileOutputStream fileOutputStream = new FileOutputStream(filename);
+		try (FileOutputStream fileOutputStream = new FileOutputStream(new File(OUTPUT_LOCATION, filename));
 				FileChannel fileChannel = fileOutputStream.getChannel()) {
 
 			int trials = 0;
