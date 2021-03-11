@@ -6,6 +6,8 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.api.TestURL.TestStatistics;
 
@@ -47,20 +49,21 @@ public class APICall {
 			new TestURL("ESG_SEDC", new URL("https://api-int.se.axa-go.axa.com/api/big"))
 		);
 
+		String runTimestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 		runTest(testSmall, NB_TRIAL);
 		System.out.println(testSmall);
-		exporCSV(testSmall.getId()+".csv", testSmall);
-		exporSummaryCSV(testSmall.getId()+"-Summary.csv", testSmall);
+		exporCSV(testSmall.getId()+"-"+runTimestamp+".csv", testSmall);
+		exporSummaryCSV(testSmall.getId()+"-"+runTimestamp+"-Summary.csv", testSmall);
 		
 		runTest(testMedium, NB_TRIAL);
 		System.out.println(testMedium);
-		exporCSV(testMedium.getId()+".csv", testMedium);
-		exporSummaryCSV(testMedium.getId()+"-Summary.csv", testMedium);
+		exporCSV(testMedium.getId()+"-"+runTimestamp+".csv", testMedium);
+		exporSummaryCSV(testMedium.getId()+"-"+runTimestamp+"-Summary.csv", testMedium);
 		
 		runTest(testLarge, NB_TRIAL);
 		System.out.println(testLarge);				
-		exporCSV(testLarge.getId()+".csv", testLarge);
-		exporSummaryCSV(testLarge.getId()+"-Summary.csv", testLarge);
+		exporCSV(testLarge.getId()+"-"+runTimestamp+".csv", testLarge);
+		exporSummaryCSV(testLarge.getId()+"-"+runTimestamp+"-Summary.csv", testLarge);
 	}
 
 	static void runTest(TestSuite testSuite, int nbTrials) throws Exception {
