@@ -6,14 +6,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import com.api.TestURL.TestStatistics;
 
 public class APICall {
 
@@ -51,21 +43,25 @@ public class APICall {
 	}
 
 	public APICall (TestSuite ... testSuites) throws Exception {
+
 		for (TestSuite ts : testSuites) {
-			String runTimestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-			runTest(ts);
+			
+			APICallRun run = new APICallRun(ts);
+			run.execute();
 			System.out.println(ts);
 
+			String runTimestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 			try (Output outputCSV = new FileOutput(
 					OUTPUT_LOCATION +"\\"+ts.getId()+"-"+runTimestamp+".csv")) {
-				exporCSV(outputCSV, ts);
+				run.exporCSV(outputCSV, ts);
 			}
 
 			try (Output outputSummaryCSV = new FileOutput(
-					OUTPUT_LOCATION +"\\"+ts.getId()+"-"+runTimestamp+".csv")) {
-				exporSummaryCSV(outputSummaryCSV, ts);
+					OUTPUT_LOCATION +"\\"+ts.getId()+"-"+runTimestamp+"-summary.csv")) {
+				run.exporSummaryCSV(outputSummaryCSV, ts);
 			}
 		}
+
 	}
 
 	class AzureBlobOutput implements Output {
@@ -96,85 +92,6 @@ public class APICall {
 		public void close() throws IOException {
 			if (fileOutputStream != null)
 				fileOutputStream.close();
-		}
-	}
-
-	void runTest(TestSuite testSuite) throws Exception {
-		if (testSuite.isParallel()) runTestParallel(testSuite);
-		else runTestNonParallel(testSuite);
-	}
-	
-	void runTestNonParallel(TestSuite testSuite) throws Exception {
-		for (int i=0; i<testSuite.getNbTrials(); i++) {
-			for (TestURL test : testSuite.getTests()) {
-				// ReadAndStore r = new ReadAndStore(test, i);
-				ReadAndForget r = new ReadAndForget(test, i);
-				test.addResult(r.call());
-			}
-		}
-	}
-
-	void runTestParallel(TestSuite testSuite) throws Exception {
-		for (TestURL test : testSuite.getTests()) {
-			List<Callable<Long>> tasks = new LinkedList<Callable<Long>>();
-			for (int i=0; i<testSuite.getNbTrials(); i++) {
-				tasks.add(new ReadAndForget(test, i));
-			}
-			// ExecutorService exec = Executors.newCachedThreadPool();
-	        ExecutorService exec = Executors.newFixedThreadPool(testSuite.getNbTrials());
-	        try {
-	            List<Future<Long>> results = exec.invokeAll(tasks);
-	            for (Future<Long> fr : results) {
-	            	test.addResult(fr.get());
-	            }
-	        } finally {
-	            exec.shutdown();
-	        }
-	    }
-	}
-
-	void exporCSV(Output output, TestSuite testSuite) throws Exception {
-		String DEL = ";";
-
-		int trials = 0;
-		String header = "Trial ID"+DEL;
-		for (TestURL testUrl: testSuite.getTests()) {
-			trials = testUrl.getResults().size();
-			header += testUrl.getId()+DEL;
-		}
-		header += "\n";
-		output.write(header.getBytes());
-
-		String s = "";
-		for (int i=0; i<trials; i++) {
-			s += "T"+(i+1)+DEL;
-			for (TestURL testUrl: testSuite.getTests()) {
-				s += testUrl.getResult(i)+DEL;
-			}
-			s += "\n";
-		}
-		output.write(s.getBytes());
-	}
-
-    void exporSummaryCSV(Output output, TestSuite testSuite) throws Exception {
-		String DEL = ";";
-
-		String header = "ID"+DEL+"CNT"+DEL+"SUM"+DEL+"MIN"+DEL+"MAX"+DEL+"AVG"+DEL+"MED"+DEL+"STD"+"\n";
-		output.write(header.getBytes());
-
-		for (TestURL t : testSuite.getTests()) {
-			TestStatistics ts = t.getTestStatistics();
-			String s = "";
-			s += t.getId()+DEL;
-			s += ts.getCount()+DEL;
-			s += ts.getSum()+DEL;
-			s += ts.getMin()+DEL;
-			s += ts.getMax()+DEL;
-			s += ts.getAverage()+DEL;
-			s += ts.getMedian()+DEL;
-			s += ts.getStderr()+DEL;
-			s += "\n";
-			output.write(s.getBytes());
 		}
 	}
 }
