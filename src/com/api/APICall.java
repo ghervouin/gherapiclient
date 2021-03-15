@@ -20,24 +20,21 @@ public class APICall {
 			new TestURL("APIGEE_EU", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/short")),
 			new TestURL("AZ_EU_NORTH", new URL("https://gherapi.azure-api.net/short")),
 			new TestURL("AZ_EU_WEST", new URL("https://gherapiwest.azure-api.net/short")),
-			new TestURL("ESG_SEDC", new URL("https://api-int.se.axa-go.axa.com/api/short"))
-		);
+			new TestURL("ESG_SEDC", new URL("https://api-int.se.axa-go.axa.com/api/short")));
 		
 		TestSuite testMedium = new TestSuite("Medium-2MB", nbTrials, PARALLEL,
 			new TestURL("BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/message")),
 			new TestURL("APIGEE_EU", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/message")),
 			new TestURL("AZ_EU_NORTH", new URL("https://gherapi.azure-api.net/message")),
 			new TestURL("AZ_EU_WEST", new URL("https://gherapiwest.azure-api.net/message")),
-			new TestURL("ESG_SEDC", new URL("https://api-int.se.axa-go.axa.com/api/message"))
-		);
+			new TestURL("ESG_SEDC", new URL("https://api-int.se.axa-go.axa.com/api/message")));
 
 		TestSuite testLarge = new TestSuite("Large-8MB", nbTrials, PARALLEL,
 			new TestURL("BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/big")),
 			new TestURL("APIGEE_EU", new URL("http://axa-mvp-entity-test.apigee.net/ghertest/big")),
 			new TestURL("AZ_EU_NORTH", new URL("https://gherapi.azure-api.net/big")),
 			new TestURL("AZ_EU_WEST", new URL("https://gherapiwest.azure-api.net/big")),
-			new TestURL("ESG_SEDC", new URL("https://api-int.se.axa-go.axa.com/api/big"))
-		);
+			new TestURL("ESG_SEDC", new URL("https://api-int.se.axa-go.axa.com/api/big")));
 
 		new APICall(testSmall, testMedium, testLarge);
 	}
