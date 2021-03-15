@@ -52,23 +52,23 @@ public class APICall {
 
 	public APICall (TestSuite ... testSuites) throws Exception {
 		for (TestSuite ts : testSuites) {
-			System.out.println("wave ----");
-			
 			String runTimestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 			runTest(ts);
 			System.out.println(ts);
-			try (FileOutput foCSV = new FileOutput(
+
+			try (Output outputCSV = new FileOutput(
 					OUTPUT_LOCATION +"\\"+ts.getId()+"-"+runTimestamp+".csv")) {
-				exporCSV(foCSV, ts);
+				exporCSV(outputCSV, ts);
 			}
-			try (FileOutput foSummaryCSV = new FileOutput(
+
+			try (Output outputSummaryCSV = new FileOutput(
 					OUTPUT_LOCATION +"\\"+ts.getId()+"-"+runTimestamp+".csv")) {
-				exporSummaryCSV(foSummaryCSV, ts);
+				exporSummaryCSV(outputSummaryCSV, ts);
 			}
 		}
 	}
 
-	class AzureBlobOutput implements OutputInterface {
+	class AzureBlobOutput implements Output {
 		// private FileOutputStream fileOutputStream;
 		AzureBlobOutput(String location) throws Exception {
 		}
@@ -82,7 +82,7 @@ public class APICall {
 		}
 	}
 
-	class FileOutput implements OutputInterface {
+	class FileOutput implements Output {
 		private FileOutputStream fileOutputStream;
 		FileOutput(String filelocation) throws Exception {
 			this.fileOutputStream = new FileOutputStream(
@@ -99,12 +99,12 @@ public class APICall {
 		}
 	}
 
-	static void runTest(TestSuite testSuite) throws Exception {
+	void runTest(TestSuite testSuite) throws Exception {
 		if (testSuite.isParallel()) runTestParallel(testSuite);
 		else runTestNonParallel(testSuite);
 	}
 	
-	static void runTestNonParallel(TestSuite testSuite) throws Exception {
+	void runTestNonParallel(TestSuite testSuite) throws Exception {
 		for (int i=0; i<testSuite.getNbTrials(); i++) {
 			for (TestURL test : testSuite.getTests()) {
 				// ReadAndStore r = new ReadAndStore(test, i);
@@ -114,7 +114,7 @@ public class APICall {
 		}
 	}
 
-	static void runTestParallel(TestSuite testSuite) throws Exception {
+	void runTestParallel(TestSuite testSuite) throws Exception {
 		for (TestURL test : testSuite.getTests()) {
 			List<Callable<Long>> tasks = new LinkedList<Callable<Long>>();
 			for (int i=0; i<testSuite.getNbTrials(); i++) {
@@ -133,7 +133,7 @@ public class APICall {
 	    }
 	}
 
-	void exporCSV(OutputInterface output, TestSuite testSuite) throws Exception {
+	void exporCSV(Output output, TestSuite testSuite) throws Exception {
 		String DEL = ";";
 
 		int trials = 0;
@@ -156,7 +156,7 @@ public class APICall {
 		output.write(s.getBytes());
 	}
 
-    void exporSummaryCSV(OutputInterface output, TestSuite testSuite) throws Exception {
+    void exporSummaryCSV(Output output, TestSuite testSuite) throws Exception {
 		String DEL = ";";
 
 		String header = "ID"+DEL+"CNT"+DEL+"SUM"+DEL+"MIN"+DEL+"MAX"+DEL+"AVG"+DEL+"MED"+DEL+"STD"+"\n";
