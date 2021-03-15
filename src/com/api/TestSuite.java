@@ -4,14 +4,14 @@ import java.util.Arrays;
 
 public class TestSuite {
 	private String id;
+	private int nbTrials;
+	private boolean parallel;
 	private TestURL[] tests;
 
-	TestSuite(String id) {
+	TestSuite(String id, int nbTrials, boolean parallel, TestURL ... tests) {
 		this.id = id;
-	}
-
-	TestSuite(String id, TestURL ... tests) {
-		this.id = id;
+		this.nbTrials = nbTrials;
+		this.parallel = parallel;
 		this.tests = tests;
 	}
 
@@ -19,8 +19,16 @@ public class TestSuite {
 		return this.id;
 	}
 	
-	public  TestURL[] getTests() {
+	public TestURL[] getTests() {
 		return tests;
+	}
+
+	public int getNbTrials() {
+		return this.nbTrials;
+	}
+
+	public boolean isParallel() {
+		return this.parallel;
 	}
 
 	@Override
