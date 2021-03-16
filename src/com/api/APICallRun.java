@@ -1,5 +1,6 @@
 package com.api;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -34,7 +35,7 @@ public class APICallRun {
 
 	private void executeParallel() throws Exception {
 		for (TestURL test : testSuite.getTests()) {
-			List<Callable<Long>> tasks = new LinkedList<Callable<Long>>();
+			List<Callable<Long>> tasks = Collections.synchronizedList(new LinkedList<Callable<Long>>());
 			for (int i=0; i<testSuite.getNbTrials(); i++) {
 				tasks.add(new ReadAndForget(test, i));
 			}
