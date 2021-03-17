@@ -24,9 +24,9 @@ public class APICallRun {
 			executeNonParallel();
 			return;
 		}
-	
-		for (TestURL test : testSuite.getTests()) {
-			for (int i=0; i<testSuite.getNbTrials(); i+=testSuite.getNbParallel()) {
+
+		for (int i=0; i<testSuite.getNbTrials(); i+=testSuite.getNbParallel()) {
+			for (TestURL test : testSuite.getTests()) {
 				List<Callable<Long>> tasks = Collections.synchronizedList(new LinkedList<Callable<Long>>());
 				for (int j=0; j<testSuite.getNbParallel() && i+j<testSuite.getNbTrials(); j++) {
 					tasks.add(new ReadAndForget(test, i+j+1));
