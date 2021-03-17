@@ -26,6 +26,7 @@ public class APICallRun {
 	private void executeNonParallel() throws Exception {
 		for (int i=0; i<testSuite.getNbTrials(); i++) {
 			for (TestURL test : testSuite.getTests()) {
+				System.out.println(String.format("From test suite %s, testing %s on url %s", testSuite.getId(), test.getId(), test.getUrl()));
 				// ReadAndStore r = new ReadAndStore(test, i);
 				ReadAndForget r = new ReadAndForget(test, i);
 				test.addResult(r.call());

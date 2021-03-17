@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,7 +15,23 @@ public class APICall {
 	static int nbTrials = 20;
 	static boolean PARALLEL = false;
 
+	
+	private static void deleteFolder() {
+
+		if (OUTPUT_LOCATION.exists()) {
+			try {
+				Files.newDirectoryStream(OUTPUT_LOCATION.toPath()).forEach((Path p) -> {if (p.toFile().isFile()) p.toFile().delete();});
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		else OUTPUT_LOCATION.mkdir();
+	}
+
 	public static void main(String[] args) throws Exception {
+		
+		deleteFolder();
 		
 		TestSuite testSmall = new TestSuite("Small-6KB", nbTrials, PARALLEL,
 			new TestURL("BACKEND", new URL("https://witty-wave-08c1e3003.azurestaticapps.net/api/short")),
