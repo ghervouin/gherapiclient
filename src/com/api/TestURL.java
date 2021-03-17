@@ -38,6 +38,7 @@ public class TestURL {
 	
 	public TestStatistics getTestStatistics() {
 		TestStatistics stat = new TestStatistics();
+		if (this.results == null || this.results.size() < 5) return stat;
 		long[] longres = this.results.stream().mapToLong(l->l).toArray();
 		LongSummaryStatistics s1 = Arrays.stream(longres).summaryStatistics();
 		stat.count = s1.getCount();

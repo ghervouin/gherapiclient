@@ -5,13 +5,14 @@ import java.util.Arrays;
 public class TestSuite {
 	private String id;
 	private int nbTrials;
-	private boolean parallel;
+	private int nbParallel;
 	private TestURL[] tests;
 
-	TestSuite(String id, int nbTrials, boolean parallel, TestURL ... tests) {
+	TestSuite(String id, int nbTrials, int nbParallel, TestURL ... tests) {
+		assert(nbTrials >= 5);
 		this.id = id;
 		this.nbTrials = nbTrials;
-		this.parallel = parallel;
+		this.nbParallel = nbParallel;
 		this.tests = tests;
 	}
 
@@ -27,8 +28,8 @@ public class TestSuite {
 		return this.nbTrials;
 	}
 
-	public boolean isParallel() {
-		return this.parallel;
+	public int getNbParallel() {
+		return this.nbParallel;
 	}
 
 	@Override

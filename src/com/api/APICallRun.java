@@ -19,14 +19,26 @@ public class APICallRun {
 	}
 	
 	public void execute() throws Exception {
-		if (testSuite.isParallel()) executeParallel();
-		else executeNonParallel();
+		
+		if (testSuite.getNbParallel() < 2) {
+			executeNonParallel();
+			return;
+		}
+	
+		for (TestURL test : testSuite.getTests()) {
+			for (int i=0; i<testSuite.getNbTrials(); i+=testSuite.getNbParallel()) {
+				List<Callable<Long>> tasks = Collections.synchronizedList(new LinkedList<Callable<Long>>());
+				for (int j=0; j<testSuite.getNbParallel() && i+j<testSuite.getNbTrials(); j++) {
+					tasks.add(new ReadAndForget(test, i+j+1));
+				}
+				executeParallel(test, tasks);
+			}
+		}
 	}
 	
 	private void executeNonParallel() throws Exception {
 		for (int i=0; i<testSuite.getNbTrials(); i++) {
 			for (TestURL test : testSuite.getTests()) {
-				System.out.println(String.format("From test suite %s, testing %s on url %s", testSuite.getId(), test.getId(), test.getUrl()));
 				// ReadAndStore r = new ReadAndStore(test, i);
 				ReadAndForget r = new ReadAndForget(test, i);
 				test.addResult(r.call());
@@ -34,23 +46,21 @@ public class APICallRun {
 		}
 	}
 
-	private void executeParallel() throws Exception {
-		for (TestURL test : testSuite.getTests()) {
-			List<Callable<Long>> tasks = Collections.synchronizedList(new LinkedList<Callable<Long>>());
-			for (int i=0; i<testSuite.getNbTrials(); i++) {
-				tasks.add(new ReadAndForget(test, i));
-			}
-			// ExecutorService exec = Executors.newCachedThreadPool();
-	        ExecutorService exec = Executors.newFixedThreadPool(testSuite.getNbTrials());
-	        try {
-	            List<Future<Long>> results = exec.invokeAll(tasks);
-	            for (Future<Long> fr : results) {
-	            	test.addResult(fr.get());
-	            }
-	        } finally {
-	            exec.shutdown();
-	        }
-	    }
+	private void executeParallel(TestURL test, List<Callable<Long>> tasks) throws Exception {
+		ExecutorService exec = Executors.newCachedThreadPool();
+        // ExecutorService exec = Executors.newFixedThreadPool(testSuite.getNbParallel());
+        try {
+            List<Future<Long>> results = exec.invokeAll(tasks);
+            for (Future<Long> fr : results) {
+            	try {
+            		test.addResult(fr.get());
+            	} catch (Throwable t) {
+            		t.printStackTrace();
+            	}
+            }
+        } finally {
+            exec.shutdown();
+        }
 	}
 
 	public void exporCSV(Output output, TestSuite testSuite) throws Exception {

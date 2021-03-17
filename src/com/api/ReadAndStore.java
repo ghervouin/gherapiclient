@@ -19,6 +19,10 @@ public class ReadAndStore implements Callable<Long> {
 		this.runId = runId;
 	}
 
+	public int getRunId() {
+		return this.runId;
+	}
+	
 	@Override
 	public Long call() throws Exception {
 		File testOutput = new File(OUTPUT_LOCATION, test.getId());
@@ -26,8 +30,10 @@ public class ReadAndStore implements Callable<Long> {
 			testOutput.delete();
 			testOutput.mkdir();
 		}
+		String url = test.getUrl().toString()+"?runId="+String.format("%02d",runId)+"&timestamp="+System.currentTimeMillis();
+		System.out.println(url+" RUN");
 		long l = System.currentTimeMillis();
-		URL nocacheUrl = new URL(test.getUrl().toString()+"?timestamp="+l);	
+		URL nocacheUrl = new URL(url);	
 		try (FileOutputStream fileOutputStream = new FileOutputStream(new File(testOutput, test.getId()+"_"+runId));
 				FileChannel fileChannel = fileOutputStream.getChannel();
 				ReadableByteChannel readableByteChannel = Channels.newChannel(nocacheUrl.openStream());) {
@@ -36,6 +42,8 @@ public class ReadAndStore implements Callable<Long> {
 		catch(java.net.SocketException e) {
 			e.printStackTrace();
 		}
-		return (System.currentTimeMillis()-l);
+		long res = (System.currentTimeMillis()-l);
+		System.out.println(url+" END");
+		return res;
 	}
 }
