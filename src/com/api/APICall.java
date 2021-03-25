@@ -12,8 +12,8 @@ import java.util.Date;
 public class APICall {
 
 	static File OUTPUT_LOCATION = new File("output");
-	static int NB_TRIALS = 1;
-	static int NB_PARALLEL = 3;
+	static int NB_TRIALS = 20;
+	static int NB_PARALLEL = 1;
 
 	private static void deleteFolder() {
 
