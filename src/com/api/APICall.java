@@ -12,8 +12,8 @@ import java.util.Date;
 public class APICall {
 
 	static File OUTPUT_LOCATION = new File("output");
-	static int NB_TRIALS = 20;
-	static int NB_PARALLEL = 1;
+	static int NB_TRIALS = 1;
+	static int NB_PARALLEL = 3;
 
 	private static void deleteFolder() {
 
@@ -23,14 +23,13 @@ public class APICall {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
 		}
 		else OUTPUT_LOCATION.mkdir();
 	}
 	
 	public static void main(String[] args) throws Exception {
 
-		deleteFolder();
+		// deleteFolder();
 
 		int nbTrials = (args != null && args.length > 0) ? Integer.valueOf(args[0]) : NB_TRIALS;
 		int nbParallel = (args != null && args.length > 1) ? Integer.valueOf(args[1]) : NB_PARALLEL;
@@ -68,13 +67,14 @@ public class APICall {
 			System.out.println(ts);
 
 			String runTimestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+			String id = ts.getId()+"-"+ts.getNbTrials()+"-"+ts.getNbParallel()+"-"+runTimestamp;
 			try (Output outputCSV = new FileOutput(
-					OUTPUT_LOCATION +"\\"+ts.getId()+"-"+runTimestamp+".csv")) {
+					OUTPUT_LOCATION +"\\"+id+".csv")) {
 				run.exporCSV(outputCSV, ts);
 			}
 
 			try (Output outputSummaryCSV = new FileOutput(
-					OUTPUT_LOCATION +"\\"+ts.getId()+"-"+runTimestamp+"-summary.csv")) {
+					OUTPUT_LOCATION +"\\"+id+"-summary.csv")) {
 				run.exporSummaryCSV(outputSummaryCSV, ts);
 			}
 		}
